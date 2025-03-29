@@ -6,13 +6,13 @@ public class ObjTablet {
     private Double Precio;
     private String NomEstudiante;
     private int Carnet;
-    private boolean Disponible;
+    private String Disponible;
 
     public ObjTablet(){
 
     }
 
-    public ObjTablet(String serial, String marca, float tamaño, Double precio, String nomEstudiante, int carnet, boolean disponible){
+    public ObjTablet(String serial, String marca, float tamaño, Double precio, String nomEstudiante, int carnet, String disponible){
 
         Serial = serial;
         Marca = marca;
@@ -84,11 +84,11 @@ public class ObjTablet {
         Carnet = carnet;
     }
 
-    public boolean isDisponible() {
+    public String getDisponible() {
         return Disponible;
     }
 
-    public void setDisponible(boolean disponible) {
+    public void setDisponible(String disponible) {
         Disponible = disponible;
     }
 

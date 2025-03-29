@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -6,6 +5,44 @@ import javax.swing.JOptionPane;
 
 
 public class Metodos {
+
+    public void Proceso() {
+
+        boolean bandera = true;
+        int opt = 0;
+
+        do{
+
+            opt = ValidarOpcionMenu1();
+
+            switch (opt) {
+
+                case 1:
+
+                    LlenarColaPc();
+
+                    break;
+
+                case 2:
+
+                    LlenarColaTablet();
+
+                    break;
+
+                case 3:
+
+                    bandera = false;
+
+                    break;  
+
+            }
+
+        }
+        while (bandera);
+
+        Mensaje("Programa finalizado");
+
+    }
 
     public int ValidarOpcionMenu1(){
 
@@ -19,22 +56,10 @@ public class Metodos {
 
             int opt = Integer.parseInt(JOptionPane.showInputDialog(Mensaje));
 
-            if (opt == 1){
+            if (opt >= 1 && opt <= 3) {
 
-                return 1;
-
-            } 
-            
-            else if (opt == 2){
-
-                return 2;
-
-            } 
-            
-            else if (opt == 3) {
-
-                return 3;
-
+                return opt;
+                
             }
 
             else {
@@ -55,10 +80,98 @@ public class Metodos {
         }
 
     }
+    
+    public int ValidarOpcionMenuPc(){
 
-    public void Mensaje(String Texto) {
+        try {
 
-        JOptionPane.showMessageDialog(null, Texto);
+            int opt = Integer.parseInt(JOptionPane.showInputDialog("Ingrese 1: Agregar // 2: Prestar // 3: Devolver // 4: Mostrar inventario // 5: Salir"));
+
+            if (opt >= 1 && opt <= 5) {
+
+                return opt;
+                
+            }
+
+            else {
+
+                Mensaje("Opcion no valida, intente de nuevo");
+
+                return ValidarOpcionMenuPc();
+
+            }
+    
+        } 
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese un número entero");
+            return ValidarOpcionMenuPc();
+
+        }
+
+    }
+    
+    public String ValidarAgregarPc() {
+
+        try {
+
+            String agregar = JOptionPane.showInputDialog("¿Desea agregar más pc? (Si/No)");
+
+            if (agregar.equalsIgnoreCase("si") || agregar.equalsIgnoreCase("no")) {
+
+                return agregar;
+                
+            }
+
+            else {
+
+                Mensaje("Error, ingrese Si/No");
+
+                return ValidarAgregarPc();
+
+            }
+    
+        } 
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese Si/No");
+            return ValidarAgregarPc();
+
+        }
+
+    }
+
+    public String ValidarDisponibilidadPc() {
+
+        try {
+
+            String disponible = JOptionPane.showInputDialog("¿Disponible? (Si/No)");
+
+            if (disponible.equalsIgnoreCase("si") || disponible.equalsIgnoreCase("no")) {
+
+                return disponible;
+                
+            }
+
+            else {
+
+                Mensaje("Error, ingrese Si/No");
+
+                return ValidarDisponibilidadPc();
+
+            }
+    
+        } 
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese Si/No");
+
+            return ValidarDisponibilidadPc();
+
+        }
 
     }
 
@@ -76,14 +189,14 @@ public class Metodos {
             o.setMemRam(Float.parseFloat(JOptionPane.showInputDialog("Ingrese la cantidad de memoria ram: ")));
             o.setDiscDuro(Float.parseFloat(JOptionPane.showInputDialog("Ingrese la cantidad de disco duro: ")));
             o.setPrecio(Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio: ")));
-            o.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre: "));
-            o.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet: ")));
-            o.setDisponible(Boolean.parseBoolean(JOptionPane.showInputDialog("Ingrese si el computador esta disponible: ")));
+            o.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante(N/A si está disponible): "));
+            o.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet(0 si está disponible): ")));
+            o.setDisponible(ValidarDisponibilidad());
             cola.offer(o);
 
-            agregar = JOptionPane.showInputDialog("¿Desea agregar más pc? (S/N)");
+            agregar = ValidarAgregarPc();
 
-            if (agregar.equalsIgnoreCase("N")) {
+            if (agregar.equalsIgnoreCase("No")) {
 
                 continuar = false;
 
@@ -91,19 +204,24 @@ public class Metodos {
 
         }
 
-        MostrarCola(cola);
+        MostrarColaPc(cola);
 
         int opt;
 
         do {
 
-            opt = Integer.parseInt(JOptionPane.showInputDialog("Ingrese 1: Agregar // 2: Prestar // 3: Devolver // 4: Mostrar inventario // 5: Salir"));
+            opt = ValidarOpcionMenuPc();
             
             if (opt != 5) {
 
-                cola = AccionesRegistro(cola, opt);
-                MostrarCola(cola);
+                cola = AccionesRegistroPc(cola, opt);
 
+                if (opt != 4) {
+
+                    MostrarColaPc(cola);
+
+                }
+                
             }
 
         }
@@ -114,7 +232,7 @@ public class Metodos {
 
     }
 
-    public void MostrarCola(Queue<ObjPc> cola) {
+    public void MostrarColaPc(Queue<ObjPc> cola) {
 
         String TextoCola = "Cola de ObjPc: ";
 
@@ -127,7 +245,7 @@ public class Metodos {
                         "\nPrecio: " + r.getPrecio() +
                         "\nNombre del estudiante: " + r.getNomEstudiante() +
                         "\nCarnet del estudiante: " + r.getCarnet() +
-                        "\nDisponible: " + r.getDisponible();
+                        "\nDisponible: " + r.getDisponible() + "\n";
 
         }
 
@@ -135,64 +253,298 @@ public class Metodos {
 
     }
 
-    public Queue<ObjPc> AccionesRegistro(Queue<ObjPc> cola, int opt) {
+    public Queue<ObjPc> AccionesRegistroPc(Queue<ObjPc> cola, int opt) {
 
         String dato = JOptionPane.showInputDialog("Ingrese el serial del pc: ");
         Queue<ObjPc> nuevaCola = new ArrayDeque<>();
 
-        while (!cola.isEmpty()) {
+        if (opt == 1) {
 
-            ObjPc pc = cola.poll();  // Saca el primer elemento
+            ObjPc o = new ObjPc();
+            o.setSerial(JOptionPane.showInputDialog("Ingrese el serial: "));
+            o.setMarca(JOptionPane.showInputDialog("Ingrese la marca: "));
+            o.setMemRam(Float.parseFloat(JOptionPane.showInputDialog("Ingrese la cantidad de memoria ram: ")));
+            o.setDiscDuro(Float.parseFloat(JOptionPane.showInputDialog("Ingrese la cantidad de disco duro: ")));
+            o.setPrecio(Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio: ")));
+            o.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante(N/A si está disponible): "));
+            o.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet(0 si está disponible): ")));
+            o.setDisponible(ValidarDisponibilidad());
+            cola.offer(o);
 
-            if (pc.getSerial().equalsIgnoreCase(dato)) {
+            return cola;
 
-                switch (opt) {
+        }
 
-                    case 1: // Consultar
+        else if (opt == 4) {
 
-                        System.out.println("Registro encontrado: " + pc.getMarca() + " - $" + pc.getPrecio());
-                        break;
+            MostrarColaPc(cola);
 
-                    case 2: // Eliminar
+            return cola;
 
-                        System.out.println("Repuesto eliminado: " + pc.getMarca());
-                        continue;  // No lo agregamos a la nueva cola
+        }
 
-                    case 3: // Modificar
+        else {
+            
+            while (!cola.isEmpty()) {
 
-                        pc.setMarca(JOptionPane.showInputDialog("Ingrese la nueva marca"));
-                        pc.setCantidad(Integer.parseInt(JOptionPane.showInputDialog("Ingrese la nueva cantidad")));
-                        pc.setPrecio(Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo precio")));
-                        break;
+                ObjPc pc = cola.poll();
 
-                    case 4: // Vender
+                if (pc.getSerial().equalsIgnoreCase(dato)) {
 
-                        int cantidadV = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad a vender"));
-                        if (cantidadV <= pc.getCantidad()) {
+                    switch (opt) {
 
-                            pc.setCantidad(pc.getCantidad() - cantidadV);
-                            System.out.println("Venta realizada: " + cantidadV + " unidades vendidas");
+                        case 2: 
 
-                        } 
-                        else {
+                            pc.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante(N/A si está disponible): "));
+                            pc.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet(0 si está disponible): ")));
+                            pc.setDisponible(ValidarDisponibilidad());
+                            
+                            break;
 
-                            System.out.println("Error: No hay suficiente stock");
+                        case 3:
 
-                        }
+                            pc.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante(N/A si está disponible): "));
+                            pc.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet(0 si está disponible): ")));
+                            pc.setDisponible(ValidarDisponibilidad());
 
-                        break;
+                            break;
+
+                    }
 
                 }
 
+                nuevaCola.offer(pc);
+
             }
 
-            nuevaCola.offer(pc);
+            return nuevaCola;
+            
+        }
+    
+    }
+
+    public int ValidarOpcionMenuTablet() {
+
+        try {
+            
+            int opt = Integer.parseInt(JOptionPane.showInputDialog("Ingrese 1: Agregar // 2: Prestar // 3: Devolver // 4: Mostrar inventario // 5: Salir"));
+            
+            if (opt >= 1 && opt <= 5) {
+
+                return opt;
+
+            }
+
+            Mensaje("Opción no válida, intente de nuevo");
+
+            return ValidarOpcionMenuTablet();
+
+        } 
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese un número entero");
+
+            return ValidarOpcionMenuTablet();
+
+        }
+
+    }
+
+    public String ValidarAgregarTablet() {
+
+        try {
+
+            String agregar = JOptionPane.showInputDialog("¿Desea agregar más tablets? (Si/No)");
+
+            if (agregar.equalsIgnoreCase("si") || agregar.equalsIgnoreCase("no")) {
+                
+                return agregar;
+            
+            }
+
+            else {
+
+                Mensaje("Error, ingrese Si/No");
+
+                return ValidarAgregarTablet();
+
+            }
+
+            
+        }
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese Si/No");
+
+            return ValidarAgregarTablet();
+
+        }
+
+    }
+
+    public String ValidarDisponibilidad() {
+        
+        try {
+
+            String disponible = JOptionPane.showInputDialog("¿Disponible? (Si/No)");
+
+            if (disponible.equalsIgnoreCase("si") || disponible.equalsIgnoreCase("no")) {
+
+                return disponible;
+
+            }
+
+            else {
+
+                Mensaje("Error, ingrese Si/No");
+
+                return ValidarDisponibilidad();
+
+            }
+            
+        }
+        
+        catch (Exception e) {
+
+            Mensaje("Error, tipo de dato no válido. Por favor, ingrese Si/No");
+
+            return ValidarDisponibilidad();
+
+        }
+
+    }
+
+    public void LlenarColaTablet() {
+        
+        Queue<ObjTablet> cola = new ArrayDeque<>();
+        boolean continuar = true;
+        String agregar = "";
+
+        while (continuar) {
+
+            ObjTablet t = new ObjTablet();
+
+            t.setSerial(JOptionPane.showInputDialog("Ingrese el serial: "));
+            t.setMarca(JOptionPane.showInputDialog("Ingrese la marca: "));
+            t.setTamaño(Float.parseFloat(JOptionPane.showInputDialog("Ingrese el tamaño: ")));
+            t.setPrecio(Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio: ")));
+            t.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante (N/A si está disponible): "));
+            t.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet (0 si está disponible): ")));
+            t.setDisponible(ValidarDisponibilidad());
+            cola.offer(t);
+
+            if (agregar.equalsIgnoreCase("No")) {
+
+                continuar = false;
+
+            }
+
+        }
+
+        MostrarColaTablet(cola);
+
+        int opt;
+
+        do {
+            
+            opt = ValidarOpcionMenuTablet();
+
+            if (opt != 5) {
+
+                cola = AccionesRegistroTablet(cola, opt);
+
+                if (opt != 4) {
+
+                    MostrarColaTablet(cola);
+
+                }
+                
+            }
+
+        }
+
+        while (opt != 5);
+
+        System.out.println("Programa finalizado");
+
+    }
+
+    public void MostrarColaTablet(Queue<ObjTablet> cola) {
+
+        String TextoCola = "Cola de Tablets: ";
+
+        for (ObjTablet t : cola) {
+
+            TextoCola += "\nSerial: " + t.getSerial() +
+                        "\nMarca: " + t.getMarca() +
+                        "\nTamaño: " + t.getTamaño() +
+                        "\nPrecio: " + t.getPrecio() +
+                        "\nNombre del estudiante: " + t.getNomEstudiante() +
+                        "\nCarnet del estudiante: " + t.getCarnet() +
+                        "\nDisponible: " + t.getDisponible() + "\n";
+
+        }
+
+        Mensaje(TextoCola);
+        
+    }
+
+    public Queue<ObjTablet> AccionesRegistroTablet(Queue<ObjTablet> cola, int opt) {
+
+        String dato = JOptionPane.showInputDialog("Ingrese el serial de la tablet: ");
+        Queue<ObjTablet> nuevaCola = new ArrayDeque<>();
+
+        if (opt == 1) {
+
+            ObjTablet t = new ObjTablet();
+
+            t.setSerial(JOptionPane.showInputDialog("Ingrese el serial: "));
+            t.setMarca(JOptionPane.showInputDialog("Ingrese la marca: "));
+            t.setTamaño(Float.parseFloat(JOptionPane.showInputDialog("Ingrese el tamaño: ")));
+            t.setPrecio(Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio: ")));
+            t.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante (N/A si está disponible): "));
+            t.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet (0 si está disponible): ")));
+            t.setDisponible(ValidarDisponibilidad());
+            cola.offer(t);
+
+            return cola;
+
+        }
+
+        if (opt == 4) {
+
+            MostrarColaTablet(cola);
+
+            return cola;
+
+        }
+
+        while (!cola.isEmpty()) {
+
+            ObjTablet tablet = cola.poll();
+
+            if (tablet.getSerial().equalsIgnoreCase(dato)) {
+
+                tablet.setNomEstudiante(JOptionPane.showInputDialog("Ingrese el nombre del estudiante (N/A si está disponible): "));
+                tablet.setCarnet(Integer.parseInt(JOptionPane.showInputDialog("Ingrese el carnet (0 si está disponible): ")));
+                tablet.setDisponible(ValidarDisponibilidad());
+
+            }
+
+            nuevaCola.offer(tablet);
 
         }
 
         return nuevaCola;
-        
+
     }
-    
+
+    public void Mensaje(String Texto) {
+
+        JOptionPane.showMessageDialog(null, Texto);
+
+    }
 
 }
